@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#173d35">
+<title>B&T · Control de barras</title>
+<style>
+:root{--green:#173d35;--green2:#24584c;--mint:#dcefe7;--bg:#f4f6f4;--card:#fff;--ink:#17211d;--muted:#66736c;--line:#dce3de;--accent:#c5e6d6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--green);color:white;padding:22px 18px 20px;border-radius:0 0 22px 22px}
+.kicker{font-size:11px;letter-spacing:.14em;font-weight:800;color:#c5e6d6}.headrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+h1{font-size:24px;margin:6px 0 4px;line-height:1.1}header p{margin:0;color:#dce9e2;font-size:13px}
+main{max-width:720px;margin:0 auto;padding:16px 14px 92px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
+.tab{border:1px solid var(--line);background:white;color:var(--muted);padding:12px 6px;border-radius:12px;font-weight:750;font-size:13px}
+.tab.active{background:var(--green);color:white;border-color:var(--green)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:13px;box-shadow:0 2px 8px #10251b08}
+h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:0 0 10px}
+label{display:block;font-size:12px;color:var(--muted);font-weight:750;margin-bottom:6px}
+input,select{width:100%;min-height:46px;border:1px solid #cbd5ce;border-radius:11px;padding:10px 12px;font:inherit;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid #75b59a;outline-offset:1px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{min-width:0}.helper{font-size:12px;color:var(--muted);margin-top:7px}
+.statrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.stat{border-radius:14px;background:var(--mint);padding:13px}.stat .num{font-size:25px;font-weight:850;color:var(--green)}.stat .lbl{font-size:11px;color:#3d6556;font-weight:700}
+.drink{padding:13px 0;border-top:1px solid var(--line)}.drink:first-of-type{border-top:0}
+.drinktop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.drinkname{font-weight:800}.result{font-size:22px;font-weight:850;color:var(--green);white-space:nowrap}.sub{font-size:12px;color:var(--muted)}
+.drinkfields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.drinkfields input{min-height:42px;padding:8px;font-size:14px}
+.pill{font-size:11px;font-weight:800;border-radius:100px;background:#edf4ef;color:#37614f;padding:5px 8px;display:inline-block}
+.btn{border:0;background:var(--green);color:white;padding:13px 15px;border-radius:12px;font:inherit;font-weight:800;width:100%;min-height:48px;cursor:pointer}
+.btn.secondary{background:white;color:var(--green);border:1px solid var(--green)}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.notice{font-size:12px;color:var(--muted);background:#f7f9f7;border-radius:10px;padding:10px 12px}
+.listitem{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.listitem:last-child{border-bottom:0}
+.listitem strong{display:block}.listitem small{color:var(--muted)}
+.empty{color:var(--muted);font-size:14px;padding:12px 0}
+footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));text-align:center;font-size:11px;color:var(--muted)}
+@media(min-width:600px){main{padding-top:22px}.drinkfields{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+  <div class="headrow"><div><div class="kicker">B&T BARRA × PULSO</div><h1>Control de barras</h1><p>Calculadora de bebidas para eventos</p></div><div style="font-size:30px" aria-hidden="true">🍸</div></div>
+</header>
+<main>
+  <nav class="tabs" aria-label="Secciones">
+    <button class="tab active" data-tab="calc">🧮 Calcular</button>
+    <button class="tab" data-tab="list">🛒 Lista de compra</button>
+    <button class="tab" data-tab="settings">⚙️ Ajustes</button>
+  </nav>
+
+  <section class="panel active" id="calc">
+    <div class="card">
+      <h2>1. Configurá el evento</h2>
+      <div class="field" style="margin-bottom:12px"><label for="eventType">Tipo de evento</label>
+        <select id="eventType">
+          <option value="wedding">Casamiento</option>
+          <option value="corporate">Corporativo</option>
+          <option value="gin">Gin + Aperol</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="guests">Cantidad de invitados</label><input id="guests" type="number" min="1" step="1" value="100" inputmode="numeric"></div>
+        <div class="field"><label for="iceBag">Bolsa de hielo (kg)</label><input id="iceBag" type="number" min="0.1" step="0.5" value="13" inputmode="decimal"></div>
+      </div>
+      <div class="helper">El cálculo de hielo mantiene el criterio aprobado: 1 kg por persona. Las compras se redondean hacia arriba.</div>
+    </div>
+    <div class="statrow">
+      <div class="stat"><div class="num" id="statGuests">100</div><div class="lbl">INVITADOS</div></div>
+      <div class="stat"><div class="num" id="statBottles">—</div><div class="lbl">BOTELLAS DE DESTILADOS</div></div>
+    </div>
+    <div class="card">
+      <h2>2. Cantidades calculadas</h2>
+      <div id="drinkResults"></div>
+      <div class="notice">Podés cambiar los ml de cada presentación de forma independiente. El cálculo conserva el criterio del Excel aprobado.</div>
+    </div>
+    <button class="btn" id="saveEvent">Guardar cálculo en esta sesión</button>
+    <div class="helper" style="text-align:center">Los datos se guardan en este navegador si el almacenamiento está disponible.</div>
+  </section>
+
+  <section class="panel" id="list">
+    <div class="card">
+      <h2>Lista de compra</h2>
+      <p class="helper" style="margin-top:-5px">Resumen del cálculo actual para revisar mientras preparás el evento.</p>
+      <div id="shoppingList" class="empty">Cargá un evento en la pestaña Calcular.</div>
+      <div class="btnrow"><button class="btn" id="copyList">Copiar lista</button><button class="btn secondary" id="printList">Imprimir / PDF</button></div>
+    </div>
+    <div class="card">
+      <h3>Control de preparación</h3>
+      <div id="checklist"></div>
+      <div class="helper">Las marcas son solo para esta sesión del navegador.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="settings">
+    <div class="card">
+      <h2>Presentaciones y criterios</h2>
+      <p class="helper">Cada bebida tiene su propio tamaño de botella. Cambiar Gin no modifica Fernet, Ron, Vodka ni Aperol.</p>
+      <div id="bottleSettings"></div>
+      <div class="notice" style="margin-top:12px">Criterios base según el Excel aprobado: botellas = redondeo hacia arriba de (tragos totales × oz por trago) / (ml de botella × 25 / 750); Fernet: 4 tragos/persona y 3 oz por trago en casamientos; Coca-Cola: 2 botellas por cada botella calculada de Fernet; hielo: 1 kg por persona.</div>
+      <button class="btn secondary" id="resetDefaults" style="margin-top:12px">Restablecer valores originales</button>
+    </div>
+    <div class="card">
+      <h3>Acerca de esta versión</h3>
+      <p class="helper">Prototipo móvil de uso personal para B&T. No se conecta a cuentas externas. Para tenerlo como icono instalable en la pantalla de inicio, el siguiente paso será publicarlo en un alojamiento web seguro.</p>
+    </div>
+  </section>
+</main>
+<footer>B&T × PULSO · Herramienta personal de control · Revisá las cantidades antes de comprar</footer>
+<script>
+const defaults = {
+  wedding:{Gin:{per:3,ml:750,oz:2,comp:'tónica de 1,5 L',factor:2.5},Fernet:{per:4,ml:750,oz:3,kind:'fernet',comp:'Coca-Cola de 2,25 L'},Ron:{per:2,ml:750,oz:2,kind:'standard',comp:'soda de 2 L'},Vodka:{per:2,ml:750,oz:2,kind:'standard'},Aperol:{per:1,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}},
+  corporate:{Gin:{per:1.5,ml:750,oz:2,kind:'standard',comp:'tónica de 1,5 L',factor:2.5},Fernet:{per:2,ml:750,oz:3,kind:'fernet',comp:'Coca-Cola de 2,25 L'},Ron:{per:1,ml:750,oz:2,kind:'standard',comp:'soda de 2 L'},Vodka:{per:1,ml:750,oz:2,kind:'standard'},Aperol:{per:.5,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}},
+  gin:{Gin:{per:3,ml:750,oz:2,kind:'standard',comp:'tónica de 1,5 L',factor:2.5},Aperol:{per:3,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}}
+};
+let cfg = JSON.parse(JSON.stringify(defaults));
+let currentResults = [];
+let checked = {};
+const $ = id => document.getElementById(id);
+const ceil = n => Math.ceil(n);
+const fmt = n => Number.isInteger(n) ? String(n) : n.toLocaleString('es-AR',{maximumFractionDigits:2});
+function activeKey(){return $('eventType').value}
+function calc(){
+ const key=activeKey(), guests=Math.max(0,Number($('guests').value)||0), bag=Math.max(.1,Number($('iceBag').value)||13);
+ const items=cfg[key], results=[];
+ Object.entries(items).forEach(([name,d])=>{
+   const drinks=guests*d.per;
+   let bottles;
+   bottles=ceil((drinks*d.oz)/(d.ml*25/750));
+   let complement='';
+   if(name==='Fernet') complement=`${ceil(bottles*2)} botellas de Coca-Cola de 2,25 L`;
+   else if(name==='Ron') complement=`${ceil((drinks*d.oz)/67.63)} botellas de soda de 2 L`;
+   else if(d.comp) complement=`${ceil(bottles*d.factor)} botellas de ${d.comp}`;
+   results.push({name,per:d.per,drinks,ml:d.ml,oz:d.oz,bottles,complement});
+ });
+ const ice=ceil(guests/bag);
+ results.push({name:'Hielo',drinks:guests,ml:bag*1000,bottles:ice,complement:`${ice} bolsas de ${fmt(bag)} kg`,ice:true});
+ currentResults=results;
+ $('statGuests').textContent=fmt(guests);
+ $('statBottles').textContent=fmt(results.filter(x=>!x.ice).reduce((s,x)=>s+x.bottles,0));
+ $('drinkResults').innerHTML=results.map(r=>{
+   if(r.ice) return `<div class="drink"><div class="drinktop"><div><div class="drinkname">🧊 Hielo</div><div class="sub">${fmt(guests)} kg necesarios · bolsa de ${fmt(bag)} kg</div></div><div class="result">${r.bottles} bolsas</div></div></div>`;
+   const d=items[r.name];
+   return `<div class="drink"><div class="drinktop"><div><div class="drinkname">${r.name}</div><div class="sub">${fmt(r.drinks)} tragos · ${fmt(r.per)} por persona</div></div><div style="text-align:right"><div class="result">${r.bottles}</div><div class="sub">botellas de ${fmt(r.ml)} ml</div></div></div><div class="drinkfields"><div><label>Tragos/persona</label><input data-name="${r.name}" data-field="per" type="number" min="0" step=".5" value="${d.per}"></div><div><label>Presentación (ml)</label><input data-name="${r.name}" data-field="ml" type="number" min="1" step="50" value="${d.ml}"></div><div><label>Oz por trago</label><input data-name="${r.name}" data-field="oz" type="number" min=".1" step=".5" value="${d.oz}"></div></div>${r.complement?`<div class="sub" style="margin-top:8px">Complemento: <strong>${r.complement}</strong></div>`:''}</div>`;
+ }).join('');
+ $('shoppingList').innerHTML=results.map(r=>`<div class="listitem"><div><strong>${r.name}</strong><small>${r.ice?'Hielo':(r.complement||'Presentación '+r.ml+' ml')}</small></div><div style="text-align:right"><strong>${r.bottles} ${r.ice?'bolsas':'botellas'}</strong>${!r.ice?`<small>${r.ml} ml</small>`:''}</div></div>`).join('');
+ $('checklist').innerHTML=results.map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);color:var(--ink);font-size:14px"><input type="checkbox" data-check="${i}" ${checked[i]?'checked':''} style="width:20px;min-height:20px;flex:0 0 20px"> ${r.name}: ${r.bottles} ${r.ice?'bolsas':'botellas'}</label>`).join('');
+ $('bottleSettings').innerHTML=Object.entries(items).map(([n,d])=>`<div class="listitem"><div><strong>${n}</strong><small>${fmt(d.per)} tragos por persona · ${fmt(d.oz)} oz/trago</small></div><div style="width:112px"><label>${n} (ml)</label><input type="number" min="1" step="50" data-settings="${n}" value="${d.ml}"></div></div>`).join('');
+ document.querySelectorAll('[data-name]').forEach(inp=>inp.addEventListener('change',e=>{const el=e.target;cfg[key][el.dataset.name][el.dataset.field]=Math.max(el.dataset.field==='ml'?1:0,Number(el.value)||0);calc();persist()}));
+ document.querySelectorAll('[data-settings]').forEach(inp=>inp.addEventListener('change',e=>{cfg[key][e.target.dataset.settings].ml=Math.max(1,Number(e.target.value)||750);calc();persist()}));
+ document.querySelectorAll('[data-check]').forEach(inp=>inp.addEventListener('change',e=>{checked[e.target.dataset.check]=e.target.checked;persist()}));
+ persist();
+}
+function persist(){try{localStorage.setItem('btbar-config',JSON.stringify(cfg));localStorage.setItem('btbar-event',JSON.stringify({type:activeKey(),guests:$('guests').value,iceBag:$('iceBag').value,checked}));}catch(e){}}
+function load(){try{const c=localStorage.getItem('btbar-config');if(c)cfg=JSON.parse(c);const ev=JSON.parse(localStorage.getItem('btbar-event')||'null');if(ev){$('eventType').value=ev.type||'wedding';$('guests').value=ev.guests||100;$('iceBag').value=ev.iceBag||13;checked=ev.checked||{}}}catch(e){}}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));if(b.dataset.tab==='list')calc();if(b.dataset.tab==='settings')calc()}));
+$('eventType').addEventListener('change',()=>calc());
+$('guests').addEventListener('input',()=>calc());
+$('iceBag').addEventListener('input',()=>calc());
+$('saveEvent').addEventListener('click',()=>{persist();const b=$('saveEvent');b.textContent='✓ Cálculo guardado';setTimeout(()=>b.textContent='Guardar cálculo en esta sesión',1500)});
+$('copyList').addEventListener('click',async()=>{const text=`B&T · ${$('eventType').selectedOptions[0].text}\nInvitados: ${$('guests').value}\n`+currentResults.map(r=>`${r.name}: ${r.bottles} ${r.ice?'bolsas':`botellas de ${r.ml} ml`}${r.complement?' · '+r.complement:''}`).join('\n');try{await navigator.clipboard.writeText(text);$('copyList').textContent='✓ Lista copiada';setTimeout(()=>$('copyList').textContent='Copiar lista',1500)}catch(e){window.prompt('Copiá la lista:',text)}});
+$('printList').addEventListener('click',()=>window.print());
+$('resetDefaults').addEventListener('click',()=>{cfg=JSON.parse(JSON.stringify(defaults));checked={};calc()});
+load();calc();
+</script>
+</body>
+</html>
