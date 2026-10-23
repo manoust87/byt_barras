@@ -130,7 +130,7 @@ function calc(){
  Object.entries(items).forEach(([name,d])=>{
    const drinks=guests*d.per;
    let bottles;
-   bottles=ceil((drinks*d.oz)/(d.ml*25/750));
+  bottles=ceil(drinks/(25*d.ml/750));
    let complement='';
    if(name==='Fernet') complement=`${ceil(bottles*2)} botellas de Coca-Cola de 2,25 L`;
    else if(name==='Ron') complement=`${ceil((drinks*d.oz)/67.63)} botellas de soda de 2 L`;
