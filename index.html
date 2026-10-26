@@ -138,7 +138,7 @@ function calc(){
    results.push({name,per:d.per,drinks,ml:d.ml,oz:d.oz,bottles,complement});
    
  });
- const ice=ceil(guests/bag);
+const ice=Math.ceil(guests*1.7/bag);
  results.push({name:'Hielo',drinks:guests,ml:bag*1000,bottles:ice,complement:`${ice} bolsas de ${fmt(bag)} kg`,ice:true});
  currentResults=results;
  $('statGuests').textContent=fmt(guests);
