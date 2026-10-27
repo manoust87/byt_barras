@@ -113,9 +113,9 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filt
 <footer>B&T × PULSO · Herramienta personal de control · Revisá las cantidades antes de comprar</footer>
 <script>
 const defaults = {
-  wedding:{Gin:{per:3,ml:750,oz:2,comp:'tónica de 1,5 L',factor:2.5},Fernet:{per:4,ml:750,oz:3,kind:'fernet',comp:'Coca-Cola de 2,25 L'},Ron:{per:2,ml:750,oz:2,kind:'standard',comp:'soda de 2 L'},Vodka:{per:2,ml:750,oz:2,kind:'standard'},Aperol:{per:1,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}},
+  wedding:{Gin:{per:3,ml:750,oz:2,comp:'tónica de 2,25 L',factor:2.5},Fernet:{per:4,ml:750,oz:3,kind:'fernet',comp:'Coca-Cola de 2,25 L'},Ron:{per:2,ml:750,oz:2,kind:'standard',comp:'soda de 2 L'},Vodka:{per:2,ml:750,oz:2,kind:'standard'},Aperol:{per:1,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}},
   corporate:{Gin:{per:1.5,ml:750,oz:2,kind:'standard',comp:'tónica de 1,5 L',factor:2.5},Fernet:{per:2,ml:750,oz:3,kind:'fernet',comp:'Coca-Cola de 2,25 L'},Ron:{per:1,ml:750,oz:2,kind:'standard',comp:'soda de 2 L'},Vodka:{per:1,ml:750,oz:2,kind:'standard'},Aperol:{per:.5,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}},
-  gin:{Gin:{per:3,ml:750,oz:2,kind:'standard',comp:'tónica de 1,5 L',factor:2.5},Aperol:{per:3,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}}
+  gin:{Gin:{per:3,ml:750,oz:2,kind:'standard',comp:'tónica de 2,25 L',factor:2.5},Aperol:{per:3,ml:750,oz:2,kind:'standard',comp:'espumante de 750 ml',factor:2.5}}
 };
 let cfg = JSON.parse(JSON.stringify(defaults));
 let currentResults = [];
@@ -134,7 +134,8 @@ function calc(){
    let complement='';
    if(name==='Fernet') complement=`${ceil(bottles*2)} botellas de Coca-Cola de 2,25 L`;
    else if(name==='Ron') complement=`${ceil((drinks*d.oz)/67.63)} botellas de soda de 2 L`;
-   else if(d.comp) complement=`${ceil(bottles*d.factor)} botellas de ${d.comp}`;
+else if(d.comp && name==='Gin') complement=`${ceil(drinks*290/2250)} botellas de tónica de 2,25 L`;
+else if(d.comp) complement=`${ceil(bottles*d.factor)} botellas de ${d.comp}`;
    results.push({name,per:d.per,drinks,ml:d.ml,oz:d.oz,bottles,complement});
    
  });
